@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { threadId } from 'worker_threads';
 import { CartItem } from '../common/cart-item';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,35 +23,39 @@ export class CartService {
     if (this.cartItems.length > 0) {
       // find the item in the cart based on item id
 
-      for (let tempCartItem of this.cartItems) {
-        if(tempCartItem.id == theCartItem.id){
+      existingCartItem = this.cartItems.find(tempCartItem => tempCartItem.id === theCartItem.id);
+      // instead of this below method, we used the above feature
+      /*for (let tempCartItem of this.cartItems) {
+        if (tempCartItem.id === theCartItem.id) {
           existingCartItem = tempCartItem;
           break;
         }
-      }
+      }*/  
+      
 
       // check if we found it
       alreadyExistsInCart = (existingCartItem != undefined);
     }
 
-    if(alreadyExistsInCart){
+    if (alreadyExistsInCart) {
       // increment the quantity
       existingCartItem.quantity++;
-    }else{
+    }
+    else {
       // just add the item to the array
       this.cartItems.push(theCartItem);
     }
 
-    // compute cart total price and total quantity 
+    // compute cart total price and total quantity
     this.computeCartTotals();
   }
 
   computeCartTotals() {
-    
+
     let totalPriceValue: number = 0;
     let totalQuantityValue: number = 0;
 
-    for(let currentCartItem of this.cartItems){
+    for (let currentCartItem of this.cartItems) {
       totalPriceValue += currentCartItem.quantity * currentCartItem.unitPrice;
       totalQuantityValue += currentCartItem.quantity;
     }
@@ -76,5 +79,4 @@ export class CartService {
     console.log(`totalPrice: ${totalPriceValue.toFixed(2)}, totalQuantity: ${totalQuantityValue}`);
     console.log('----');
   }
-  
 }
