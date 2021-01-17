@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Country } from 'src/app/common/country';
 import { CommonFormService } from 'src/app/services/common-form.service';
 
 @Component({
@@ -17,6 +18,8 @@ export class CheckoutComponent implements OnInit {
   creditCardYears: number[] = [];
   creditCardMonths: number[] = [];
 
+  countries: Country[] = [];
+
   constructor(private formBuilder: FormBuilder,
     private commonFormService: CommonFormService) { }
 
@@ -31,7 +34,7 @@ export class CheckoutComponent implements OnInit {
         street: [''],
         number: [''],
         city: [''],
-        province: [''],
+        state: [''],
         country: [''],
         postcode: ['']
       }),
@@ -39,7 +42,7 @@ export class CheckoutComponent implements OnInit {
         street: [''],
         number: [''],
         city: [''],
-        province: [''],
+        state: [''],
         country: [''],
         postcode: ['']
       }),
@@ -72,6 +75,15 @@ export class CheckoutComponent implements OnInit {
       }
     );
 
+    // populate countries
+
+    this.commonFormService.getCountries().subscribe(
+      data => {
+        console.log("Retrieve countries: " + JSON.stringify(data));
+        this.countries = data;
+      }
+    );
+    
   }
 
   copyShippingAddressToBillingAddress(event) {
