@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Country } from 'src/app/common/country';
+import { State } from 'src/app/common/state';
 import { CommonFormService } from 'src/app/services/common-form.service';
 
 @Component({
@@ -19,6 +20,9 @@ export class CheckoutComponent implements OnInit {
   creditCardMonths: number[] = [];
 
   countries: Country[] = [];
+
+  shippingAddressStates: State[] = [];
+  billingAddressStates: State[] = [];
 
   constructor(private formBuilder: FormBuilder,
     private commonFormService: CommonFormService) { }
@@ -83,7 +87,7 @@ export class CheckoutComponent implements OnInit {
         this.countries = data;
       }
     );
-    
+
   }
 
   copyShippingAddressToBillingAddress(event) {
@@ -91,15 +95,24 @@ export class CheckoutComponent implements OnInit {
     if (event.target.checked) {
       this.checkoutFromGroup.controls.billingAddress
         .setValue(this.checkoutFromGroup.controls.shippingAddress.value);
+
+        // bug fix for states
+        this.billingAddressStates = this.shippingAddressStates;
     }else{
       this.checkoutFromGroup.controls.billingAddress.reset();
+
+      // bug fix for states
+      this.billingAddressStates = [];
     }
   }
 
   onSubmit() {
     console.log("Handling the submit button");
     console.log(this.checkoutFromGroup.get('customer').value);
-    console.log("The eamil address is " + this.checkoutFromGroup.get('customer').value.email);
+    console.log("The email address is " + this.checkoutFromGroup.get('customer').value.email);
+
+    console.log("The shipping address country is " + this.checkoutFromGroup.get('shippingAddress').value.country.name);
+    console.log("The shipping address state is " + this.checkoutFromGroup.get('shippingAddress').value.state.name);
   }
 
   handleMonthsAndYears(){
@@ -127,6 +140,31 @@ export class CheckoutComponent implements OnInit {
     );
   }
 
+  getstates(formGroupName: string){
 
+    const formGroup = this.checkoutFromGroup.get(formGroupName);
+
+    const countyCode = formGroup.value.country.code;
+    const countyName = formGroup.value.country.name;
+
+    console.log(`${formGroupName} country code: ${countyCode}`);
+    console.log(`${formGroupName} country name: ${countyName}`);
+    
+    this.commonFormService.getStates(countyCode).subscribe(
+      data => {
+
+        if(formGroupName === 'shippingAddress' ) {
+          this.shippingAddressStates = data;
+        }else{
+          this.billingAddressStates = data;
+        }
+
+        // select first item by default
+        formGroup.get('state').setValue(data[0]);
+      }
+    );
+    
+
+  }
 
 }
