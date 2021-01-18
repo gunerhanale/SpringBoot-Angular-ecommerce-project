@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Country } from 'src/app/common/country';
 import { State } from 'src/app/common/state';
 import { CommonFormService } from 'src/app/services/common-form.service';
@@ -11,7 +11,7 @@ import { CommonFormService } from 'src/app/services/common-form.service';
 })
 export class CheckoutComponent implements OnInit {
 
-  checkoutFromGroup: FormGroup;
+  checkoutFormGroup: FormGroup;
 
   totalPrice: number = 0;
   totalQuantity: number = 0;
@@ -28,11 +28,12 @@ export class CheckoutComponent implements OnInit {
     private commonFormService: CommonFormService) { }
 
   ngOnInit(): void {
-    this.checkoutFromGroup = this.formBuilder.group({
+    this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['']
+          firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+          lastName:  new FormControl('', [Validators.required, Validators.minLength(2)]),
+          email: new FormControl('',
+                                [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])
       }),
       shippingAddress: this.formBuilder.group({
         street: [''],
@@ -90,16 +91,20 @@ export class CheckoutComponent implements OnInit {
 
   }
 
+  get firstName() { return this.checkoutFormGroup.get('customer.firstName'); }
+  get lastName() { return this.checkoutFormGroup.get('customer.lastName'); }
+  get email() { return this.checkoutFormGroup.get('customer.email'); }
+
   copyShippingAddressToBillingAddress(event) {
 
     if (event.target.checked) {
-      this.checkoutFromGroup.controls.billingAddress
-        .setValue(this.checkoutFromGroup.controls.shippingAddress.value);
+      this.checkoutFormGroup.controls.billingAddress
+        .setValue(this.checkoutFormGroup.controls.shippingAddress.value);
 
         // bug fix for states
         this.billingAddressStates = this.shippingAddressStates;
     }else{
-      this.checkoutFromGroup.controls.billingAddress.reset();
+      this.checkoutFormGroup.controls.billingAddress.reset();
 
       // bug fix for states
       this.billingAddressStates = [];
@@ -108,16 +113,21 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit() {
     console.log("Handling the submit button");
-    console.log(this.checkoutFromGroup.get('customer').value);
-    console.log("The email address is " + this.checkoutFromGroup.get('customer').value.email);
 
-    console.log("The shipping address country is " + this.checkoutFromGroup.get('shippingAddress').value.country.name);
-    console.log("The shipping address state is " + this.checkoutFromGroup.get('shippingAddress').value.state.name);
+    if(this.checkoutFormGroup.invalid){
+      this.checkoutFormGroup.markAllAsTouched();   //touching all fields triggers the display of the error messages.
+    }
+
+    console.log(this.checkoutFormGroup.get('customer').value);
+    console.log("The email address is " + this.checkoutFormGroup.get('customer').value.email);
+
+    console.log("The shipping address country is " + this.checkoutFormGroup.get('shippingAddress').value.country.name);
+    console.log("The shipping address state is " + this.checkoutFormGroup.get('shippingAddress').value.state.name);
   }
 
   handleMonthsAndYears(){
 
-    const creditCardFormGroup = this.checkoutFromGroup.get('creditCard');
+    const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
 
     const currentYear: number = new Date().getFullYear();
     const selectedYear: number = Number(creditCardFormGroup.value.expirationYear);
@@ -142,7 +152,7 @@ export class CheckoutComponent implements OnInit {
 
   getstates(formGroupName: string){
 
-    const formGroup = this.checkoutFromGroup.get(formGroupName);
+    const formGroup = this.checkoutFormGroup.get(formGroupName);
 
     const countyCode = formGroup.value.country.code;
     const countyName = formGroup.value.country.name;
@@ -163,8 +173,6 @@ export class CheckoutComponent implements OnInit {
         formGroup.get('state').setValue(data[0]);
       }
     );
-    
-
   }
 
 }
