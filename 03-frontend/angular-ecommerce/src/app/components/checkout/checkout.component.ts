@@ -44,12 +44,12 @@ export class CheckoutComponent implements OnInit {
         postcode: new FormControl('', [Validators.required, Validators.minLength(2), CommonValidators.notOnlyWhitespace])
       }),
       billingAddress: this.formBuilder.group({
-        street: [''],
-        number: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        postcode: ['']
+        street: new FormControl('', [Validators.required, Validators.minLength(2), CommonValidators.notOnlyWhitespace]),
+        number: new FormControl('', [Validators.required, Validators.minLength(1), CommonValidators.notOnlyWhitespace]),
+        city: new FormControl('', [Validators.required, Validators.minLength(2), CommonValidators.notOnlyWhitespace]),
+        state: new FormControl('', [Validators.required]),
+        country: new FormControl('', [Validators.required]),
+        postcode: new FormControl('', [Validators.required, Validators.minLength(2), CommonValidators.notOnlyWhitespace])
       }),
       creditCard: this.formBuilder.group({
         cardType: [''],
@@ -101,6 +101,13 @@ export class CheckoutComponent implements OnInit {
   get shippingAddressState() { return this.checkoutFormGroup.get('shippingAddress.state'); }
   get shippingAddressCountry() { return this.checkoutFormGroup.get('shippingAddress.country'); }
   get shippingAddressPostCode() { return this.checkoutFormGroup.get('shippingAddress.postcode'); }
+
+  get billingAddressStreet() { return this.checkoutFormGroup.get('billingAddress.street'); }
+  get billingAddressCity() { return this.checkoutFormGroup.get('billingAddress.city'); }
+  get billingAddressNumber() { return this.checkoutFormGroup.get('billingAddress.number'); }
+  get billingAddressState() { return this.checkoutFormGroup.get('billingAddress.state'); }
+  get billingAddressCountry() { return this.checkoutFormGroup.get('billingAddress.country'); }
+  get billingAddressPostCode() { return this.checkoutFormGroup.get('billingAddress.postcode'); }
   
 
   copyShippingAddressToBillingAddress(event) {
