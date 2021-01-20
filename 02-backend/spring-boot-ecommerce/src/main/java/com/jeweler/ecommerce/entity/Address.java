@@ -28,8 +28,8 @@ public class Address {
     @Column(name="country")
     private String country;
 
-    @Column(name="zip_code")
-    private String zipCode;
+    @Column(name="postcode")
+    private String postcode;
 
     @Column(name="number")
     private String number;
