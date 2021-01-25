@@ -2,7 +2,6 @@ package com.jeweler.ecommerce.config;
 
 import com.jeweler.ecommerce.entity.Country;
 import com.jeweler.ecommerce.entity.Product;
-import com.jeweler.ecommerce.entity.ProductCategory;
 import com.jeweler.ecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +32,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
         // disable HTTP methods for below entities: PUT, POST, DELETE and PATCH
         disableHttpMethods(Product.class, config, theUnsupportedActions);
-        disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
+        // disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
         disableHttpMethods(Country.class, config, theUnsupportedActions);
         disableHttpMethods(State.class, config, theUnsupportedActions);
 
