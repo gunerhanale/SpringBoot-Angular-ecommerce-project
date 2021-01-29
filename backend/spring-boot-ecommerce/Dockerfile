@@ -1,5 +1,4 @@
-FROM openjdk:11-oracle
-VOLUME /tmp
+FROM openjdk:11
 EXPOSE 8080
-ADD ./out/artifacts/spring_boot_ecommerce_jar/spring-boot-ecommerce.jar .
+ADD target/spring-boot-ecommerce.jar spring-boot-ecommerce.jar
 ENTRYPOINT ["java","-jar","spring-boot-ecommerce.jar"]
