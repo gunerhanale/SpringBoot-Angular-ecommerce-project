@@ -3,7 +3,7 @@ version: '3'
 services:
   docker-mysql:
     image: mysql:8
-    container_name: ecommerce-mysql
+    container_name: docker-mysql
     ports:
        - "3306:3306"
     environment:
@@ -23,7 +23,7 @@ services:
     restart: always
     links:
       - docker-mysql
-
+  
   frontend:
     image: gunerhanale/ecommerce-frontend
     container_name: ecommerce-frontend

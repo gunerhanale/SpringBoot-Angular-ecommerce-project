@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  ecommerceAppUrl: 'http://localhost:8080/api'
+//  ecommerceAppUrl: 'http://localhost:8080/api'
+  ecommerceAppUrl: 'http://192.168.99.100:8080/api'
 };
 
 /*
