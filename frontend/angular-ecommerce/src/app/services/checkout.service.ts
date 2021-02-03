@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Purchase } from '../common/purchase';
 
 @Injectable({
@@ -8,7 +9,9 @@ import { Purchase } from '../common/purchase';
 })
 export class CheckoutService {
 
-  private puchaseUrl = "http://localhost:8080/api/checkout/purchase";
+  private appUrl = environment.ecommerceAppUrl;
+
+  private puchaseUrl = this.appUrl + "/checkout/purchase";
 
   constructor(private httpsClient: HttpClient) { }
 

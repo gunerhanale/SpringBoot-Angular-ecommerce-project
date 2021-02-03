@@ -1,16 +1,9 @@
-# Set nginx base image
-FROM nginx:alpine-perl
+FROM node:10.16.1-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build --prod
 
-LABEL maintainer="Ebubekir Gunerhanal"
-
-EXPOSE 4200
-## Remove default Nginx website
-RUN rm -rf /usr/share/nginx/html/*
-
-RUN rm /etc/nginx/conf.d/default.conf
-
-ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
-
-ADD . /usr/share/nginx/html 
-
-
+FROM nginx:1.15.8-alpine
+COPY /nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist/angular-ecommerce /usr/share/nginx/html
